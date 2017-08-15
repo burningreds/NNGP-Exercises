@@ -33,7 +33,8 @@ class SigmoidNeuron(Perceptron):
         return 1 if self.sigmoidFunction(x, y) > self.threshold else 0
 
     def sigmoidFunction(self, x, y):
-        return 1 / np.exp(x * self.w1 + y * self.w2 + self.bias)
+        return 1 / (1 + np.exp(- x * self.w1 - y * self.w2 - self.bias))
+
 
 class LearningNeuron(SigmoidNeuron):
     def __init__(self):
@@ -41,7 +42,7 @@ class LearningNeuron(SigmoidNeuron):
         self.w2 = 1
         self.bias = 0.5
         self.c = 0.01
-        self.threshold = 0.1
+        self.threshold = 0.0
 
     # Modifies weights accordingly if
     # calculated output is different from desired output
@@ -56,8 +57,8 @@ class LearningNeuron(SigmoidNeuron):
 
     # Training for the perceptron to identify a line
     # determined by slope m and y-intercept n
-    def training(self, m, n):
-        for a in range(0, 10000):
+    def training(self, m, n, times):
+        for a in range(0, times):
             x = random.randint(-50, 50)
             y = random.randint(-50, 50)
             out = 1 if m * x + n - y > 0 else 0
@@ -66,13 +67,13 @@ class LearningNeuron(SigmoidNeuron):
     # "Tests" the training by plotting random points (300)
     # classified by perceptron for line determined by m and n
     # Calculates success rate
-    def test(self, m, n):
+    def test(self, m, n, times):
         # y = mx + n
         xVector = range(-100, 100)
         yVector = [(i * m + n) for i in xVector]
         plt.plot(xVector, yVector)
         successCount = 0
-        for a in range(0, 300):
+        for a in range(0, times):
             x = random.randint(-50, 50)
             y = random.randint(-50, 50)
             out = self.operate(x, y)
@@ -81,6 +82,20 @@ class LearningNeuron(SigmoidNeuron):
                 successCount += 1
             colour = 'ro' if out == 1 else 'bo'
             plt.plot(x, y, colour)
-        print "Success rate: " + str(successCount / 300.0)
+        successRate = successCount / (times * 1.0)
+        print "Success rate: " + str(successRate)
         plt.axis([-100, 100, -100, 100])
         plt.show()
+
+    def classifyPoints(self, m, n, times):
+        successCount = 0
+        x = [(random.randint(-50, 50)) for i in range(0, times)]
+        y = [(random.randint(-50, 50)) for i in range(0, times)]
+        out = [0] * times
+        for j in range(0, times):
+            out = self.operate(x[j], y[j])
+            desOut = 1 if m * x[j] + n - y[j] > 0 else 0
+            if out == desOut:
+                successCount += 1
+        successRate = successCount / (times * 1.0)
+        return successRate

@@ -8,9 +8,9 @@ def main():
     print "Random y-intercept (n): " + str(n)
     perceptron = LearningPerceptron()
     print "Training..."
-    perceptron.training(m, n)
+    perceptron.training(m, n, 10000)
     print "Testing..."
-    perceptron.test(m, n)
+    perceptron.test(m, n, 300)
 
 
 if __name__ == "__main__":
