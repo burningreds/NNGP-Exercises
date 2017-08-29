@@ -24,7 +24,16 @@ class NeuralNetwork:
         self.layers.append(NeuronLayer(n, nInputs, prev))
 
     def feed(self, input):
-        self.getInputLayer.feed(input)
+        return self.getInputLayer().feed(input)
 
     def errorBackpropagation(self, desOut):
         self.getOutputLayer().errorBackpropagation(desOut)
+
+    def update(self, input):
+        self.getInputLayer().update(input)
+
+    def train(self, input, desOut):
+        output = self.feed(input)
+        self.errorBackpropagation(desOut)
+        self.update(input)
+        return output
